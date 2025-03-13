@@ -16,6 +16,21 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        Product::factory(10)->create();
+        // TRUNCATE TABLES
+        User::truncate();
+        User::insert([
+            [
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => bcrypt('password'),
+                'is_admin' => true,
+            ],
+            [
+                'name' => 'User',
+                'email' => 'user@example.com',
+                'password' => bcrypt('password'),
+                'is_admin' => false,
+            ]
+        ]);
     }
 }
