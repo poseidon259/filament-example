@@ -11,6 +11,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Wizard;
@@ -120,96 +121,104 @@ class CreateOrder extends CreateRecord
                             ->schema([
                                 DatePicker::make('order_date')
                                     ->label(__('messages.order_date'))
-                                    ->required()
+                                    ->required(fn(Get $get) => !$this->isDraft($get))
                                     ->placeholder('2025-02-01')
                                     ->date()
-                                    ->default(now())
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
-                                ToggleButtons::make('status')
+                                Select::make('status')
                                     ->label(__('messages.status'))
-                                    ->options(function (?Model $record) {
-                                        return $record ? [OrderStatus::Confirmed->value => __('messages.confirmed')] : [OrderStatus::Draft->value => __('messages.draft')];
-                                    })
-                                    ->colors([
-                                        OrderStatus::Draft->value => 'draft',
-                                        OrderStatus::Confirmed->value => 'confirmed',
+                                    ->options([
+                                        OrderStatus::Draft->value => __('messages.draft'),
+                                        OrderStatus::Confirmed->value => __('messages.confirmed'),
                                     ])
-                                    ->default(OrderStatus::Draft->value)
-                                    ->inline(),
+                                    ->native(false)
+                                    ->required()
+                                    ->default(OrderStatus::Draft->value),
 
                                 TextInput::make('customer_name')
                                     ->label(__('messages.customer_name'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('山田　太郎')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('sales_representative')
                                     ->label(__('messages.sales_representative'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('山田　太郎')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('project_name')
                                     ->label(__('messages.project_name'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('ABC店')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('order_no')
                                     ->label(__('messages.order_no'))
-                                    ->default(uniqid())
-                                    ->required(),
+                                    ->placeholder('EE-000000-H0000')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 DateTimePicker::make('delivery_date')
                                     ->label(__('messages.delivery_date'))
-                                    ->required()
+                                    ->required(fn(Get $get) => !$this->isDraft($get))
                                     ->placeholder('2025-02-01 13:00')
                                     ->native(false)
-                                    ->default(now())
-                                    ->displayFormat('Y-m-d H:i'),
+                                    ->displayFormat('Y-m-d H:i')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
                                 DatePicker::make('expected_inspection_month')
                                     ->label(__('messages.expected_inspection_month'))
-                                    ->required()
+                                    ->required(fn(Get $get) => !$this->isDraft($get))
                                     ->placeholder('2025-02')
                                     ->date()
-                                    ->default(now())
                                     ->native(false)
-                                    ->displayFormat('Y-m'),
+                                    ->displayFormat('Y-m')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
                                 TextInput::make('delivery_destination')
                                     ->label(__('messages.delivery_destination'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('ABC店')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('delivery_destination_phone')
                                     ->label(__('messages.delivery_destination_phone'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('080-0000-0000')
+                                    ->numeric()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('delivery_destination_zip_code')
                                     ->label(__('messages.delivery_destination_zip_code'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('000-0000')
+                                    ->numeric()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('delivery_destination_address')
                                     ->label(__('messages.delivery_destination_address'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('A県B市C町1-1-1')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('receiver_person_in_charge')
                                     ->label(__('messages.receiver_person_in_charge'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('山田　太郎')
+                                    ->string()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 TextInput::make('receiver_phone_number')
                                     ->label(__('messages.receiver_phone_number'))
-                                    ->default('Developer')
-                                    ->required(),
+                                    ->placeholder('080-0000-0000')
+                                    ->numeric()
+                                    ->required(fn(Get $get) => !$this->isDraft($get)),
 
                                 Hidden::make('total')
                                     ->label(__('messages.total'))
                                     ->dehydrated()
-                                    ->required()
+                                    ->required(fn(Get $get) => !$this->isDraft($get))
                             ])
                             ->columns(2)
                     ])->columns(2),
@@ -233,7 +242,6 @@ class CreateOrder extends CreateRecord
                             ->schema([
                                 TextInput::make('display_total')
                                     ->label(__('messages.total'))
-                                    ->numeric()
                                     ->disabled()
                                     ->dehydrated(false)
                                     ->columnSpan(1)
@@ -254,5 +262,10 @@ class CreateOrder extends CreateRecord
                 ->danger()
                 ->send();
         }
+    }
+
+    public function isDraft(Get $get)
+    {
+        return $get('status') === OrderStatus::Draft->value;
     }
 }

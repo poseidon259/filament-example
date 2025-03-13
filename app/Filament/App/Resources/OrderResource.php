@@ -2,23 +2,14 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Enums\OrderStatus;
 use App\Filament\App\Resources\OrderResource\Pages;
 use App\Models\Order;
 use App\Models\Product;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -89,6 +80,7 @@ class OrderResource extends Resource
     {
         return Repeater::make('items')
             ->relationship('items')
+            ->addActionLabel(__('messages.add_item'))
             ->schema([
                 Placeholder::make('item_number')
                     ->label(__('messages.no'))
@@ -99,37 +91,149 @@ class OrderResource extends Resource
                     ->dehydrated(false),
 
                 Select::make('product_id')
-                    ->placeholder(__('messages.select_product'))
-                    ->label(__('messages.product_name'))
+                    ->label(__('messages.product_code'))
+                    ->placeholder('')
                     ->options(self::getProducts())
                     ->required()
                     ->reactive()
+                    ->preload()
+                    ->live()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $product = Product::find($state);
 
                         if ($product) {
+                            $subTotal = $get('qty') * $product->price;
                             $set('price', $product->price);
-                            $set('sub_total', $get('qty') * $get('price'));
+                            $set('display_price', $product->price . ' 円');
+                            $set('display_sub_total', $subTotal . ' 円');
+                            $set('sub_total', $subTotal);
                             $set('product_type', $product->product_type);
+                            $set('product_name', $product->name);
                         } else {
                             $set('price', 0);
+                            $set('display_price', 0 . ' 円');
+                            $set('display_sub_total', 0 . ' 円');
                             $set('sub_total', 0);
                             $set('product_type', '');
+                            $set('product_name', '');
                         }
                     })
-                    ->afterStateHydrated(function ($state, Set $set) {
+                    ->afterStateHydrated(function ($state, Set $set, Get $get) {
                         if ($state) {
                             $product = Product::find($state);
                             $set('product_type', $product->product_type);
+                            $set('product_name', $product->name);
+                            $set('price', $product->price);
+                            $set('display_price', $product->price . ' 円');
+                            $subTotal = $get('qty') * $product->price;
+                            $set('display_sub_total', $subTotal . ' 円');
+                            $set('sub_total', $subTotal);
                         }
                     })
                     ->distinct()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->searchable(),
 
-                TextInput::make('product_type')
-                    ->label(__('messages.product_type'))
+                Select::make('product_name')
+                    ->label(__('messages.product_name'))
+                    ->placeholder('')
+                    ->options(function (Get $get) {
+
+                        $products = Product::query();
+                        if ($get('product_type')) {
+                            return $products->where('product_type', $get('product_type'))
+                                ->pluck('name', 'name');
+                        }
+
+                        return $products->pluck('name', 'name');
+                    })
                     ->required()
+                    ->reactive()
+                    ->preload()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                        $products = Product::query()
+                            ->where('name', $state);
+                        if ($get('product_type')) {
+                            $products->where('product_type', $get('product_type'))
+                                ->get();
+                        } else {
+                            $products->get();
+                        }
+
+                        if ($products->count() > 1) {
+                            $set('product_id', '');
+                            $set('product_type', '');
+                        } else if ($products->count() == 1) {
+                            $product = $products->first();
+                            $set('product_id', $product->id);
+                            $set('product_type', $product->product_type);
+
+                            $subTotal = $get('qty') * $product->price;
+                            $set('price', $product->price);
+                            $set('display_price', $product->price . ' 円');
+                            $set('display_sub_total', $subTotal . ' 円');
+                            $set('sub_total', $subTotal);
+                        }
+                    })
+                    ->searchable()
+                    ->dehydrated(false),
+
+                Select::make('product_type')
+                    ->label(__('messages.product_type'))
+                    ->placeholder('')
+                    ->options(function (Get $get) {
+                        $query = Product::query();
+
+                        if ($get('product_name')) {
+                            return $query
+                                ->where('name', $get('product_name'))
+                                ->pluck('product_type', 'product_type');
+                        }
+
+                        return $query->pluck('product_type', 'product_type');
+                    })
+                    ->required()
+                    ->reactive()
+                    ->preload()
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+
+                        if (empty($state)) {
+                            $set('product_id', '');
+                            $set('product_name', '');
+                            $set('price', 0);
+                            $set('display_price', 0 . ' 円');
+                            $set('display_sub_total', 0 . ' 円');
+                            $set('sub_total', 0);
+                            return;
+                        }
+
+                        $products = Product::query()
+                            ->where('product_type', $state);
+
+                        if ($get('product_name')) {
+                            $products->where('name', $get('product_name'))
+                                ->get();
+                        } else {
+                            $products->get();
+                        }
+
+                        if ($products->count() > 1) {
+                            $set('product_id', '');
+                            $set('product_name', '');
+                        } else if ($products->count() == 1) {
+                            $product = $products->first();
+                            $set('product_id', $product->id);
+                            $set('product_name', $product->name);
+
+                            $subTotal = $get('qty') * $product->price;
+                            $set('price', $product->price);
+                            $set('display_price', $product->price . ' 円');
+                            $set('display_sub_total', $subTotal . ' 円');
+                            $set('sub_total', $subTotal);
+                        }
+                    })
+                    ->searchable()
                     ->dehydrated(false),
 
                 TextInput::make('qty')
@@ -155,19 +259,28 @@ class OrderResource extends Resource
                     })
                     ->afterStateUpdated(function (Set $set, Get $get) {
                         $qty = $get('qty') ?: 0;
-                        $set('sub_total', $qty * $get('price'));
+                        $subTotal = $qty * $get('price');
+                        $set('display_sub_total', $subTotal . '円');
+                        $set('sub_total', $subTotal);
                     })
-                    ->extraAttributes([
-                        'min' => 1,
-                    ])
                     ->required(),
 
-                TextInput::make('price')
+                TextInput::make('display_price')
                     ->label(__('messages.price'))
                     ->disabled()
-                    ->numeric()
+                    ->dehydrated(false)
+                    ->required(),
+
+                Hidden::make('price')
+                    ->label(__('messages.price'))
+                    ->disabled()
                     ->dehydrated()
                     ->required(),
+
+                TextInput::make('display_sub_total')
+                    ->label(__('messages.sub_total'))
+                    ->disabled()
+                    ->dehydrated(false),
 
                 Hidden::make('sub_total')
                     ->label(__('messages.sub_total'))
@@ -177,7 +290,7 @@ class OrderResource extends Resource
             ->dehydrated()
             ->defaultItems(1)
             ->hiddenLabel()
-            ->columns(5)
+            ->columns(7)
             ->required();
     }
 
@@ -186,6 +299,6 @@ class OrderResource extends Resource
         return Product::query()
             ->orderBy('created_at')
             ->orderBy('id')
-            ->pluck('name', 'id');
+            ->pluck('product_code', 'id')->toArray();
     }
 }

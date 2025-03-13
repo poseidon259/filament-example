@@ -6,7 +6,6 @@ use App\Enums\OrderStatus;
 use App\Filament\App\Resources\OrderResource;
 use App\Models\Product;
 use Filament\Actions;
-use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
@@ -15,7 +14,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -49,37 +47,41 @@ class EditOrder extends EditRecord
                                     ->required()
                                     ->placeholder('2025-02-01')
                                     ->date()
-                                    ->default(now())
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
                                 Select::make('status')
                                     ->label(__('messages.status'))
                                     ->options([
-                                        OrderStatus::Draft->value => Blade::render("<span class='inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-black ring-1 ring-gray-500/10 ring-inset'>{{ __('messages.draft') }}</span>"),
-                                        OrderStatus::Confirmed->value => Blade::render("<span class='inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-black ring-1 ring-blue-700/10 ring-inset'>{{ __('messages.confirmed') }}</span>"),
+                                        OrderStatus::Draft->value => __('messages.draft'),
+                                        OrderStatus::Confirmed->value => __('messages.confirmed'),
                                     ])
                                     ->searchable()
                                 ->allowHtml(),
 
                                 TextInput::make('customer_name')
                                     ->label(__('messages.customer_name'))
-                                    ->default('Developer')
+                                    ->placeholder('山田　太郎')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('sales_representative')
                                     ->label(__('messages.sales_representative'))
-                                    ->default('Developer')
+                                    ->placeholder('山田　太郎')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('project_name')
                                     ->label(__('messages.project_name'))
-                                    ->default('Developer')
+                                    ->placeholder('ABC店')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('order_no')
                                     ->label(__('messages.order_no'))
-                                    ->default(uniqid())
+                                    ->placeholder('EE-000000-H0000')
+                                    ->string()
                                     ->required(),
 
                                 DateTimePicker::make('delivery_date')
@@ -87,46 +89,52 @@ class EditOrder extends EditRecord
                                     ->required()
                                     ->placeholder('2025-02-01 13:00')
                                     ->native(false)
-                                    ->default(now())
-                                    ->displayFormat('Y-m-d H:i'),
+                                    ->displayFormat('Y-m-d H:i')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
                                 DatePicker::make('expected_inspection_month')
                                     ->label(__('messages.expected_inspection_month'))
                                     ->required()
                                     ->placeholder('2025-02')
                                     ->date()
-                                    ->default(now())
                                     ->native(false)
-                                    ->displayFormat('Y-m'),
+                                    ->displayFormat('Y-m')
+                                    ->locale(getenv('DATE_PICKER_LOCALE')),
 
                                 TextInput::make('delivery_destination')
                                     ->label(__('messages.delivery_destination'))
-                                    ->default('Developer')
+                                    ->placeholder('ABC店')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('delivery_destination_phone')
                                     ->label(__('messages.delivery_destination_phone'))
-                                    ->default('Developer')
+                                    ->placeholder('080-0000-0000')
+                                    ->numeric()
                                     ->required(),
 
                                 TextInput::make('delivery_destination_zip_code')
                                     ->label(__('messages.delivery_destination_zip_code'))
-                                    ->default('Developer')
+                                    ->placeholder('000-0000')
+                                    ->numeric()
                                     ->required(),
 
                                 TextInput::make('delivery_destination_address')
                                     ->label(__('messages.delivery_destination_address'))
-                                    ->default('Developer')
+                                    ->placeholder('A県B市C町1-1-1')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('receiver_person_in_charge')
                                     ->label(__('messages.receiver_person_in_charge'))
-                                    ->default('Developer')
+                                    ->placeholder('山田　太郎')
+                                    ->string()
                                     ->required(),
 
                                 TextInput::make('receiver_phone_number')
                                     ->label(__('messages.receiver_phone_number'))
-                                    ->default('Developer')
+                                    ->placeholder('080-0000-0000')
+                                    ->numeric()
                                     ->required(),
 
                                 Hidden::make('total')
@@ -152,7 +160,6 @@ class EditOrder extends EditRecord
                                     ->schema([
                                         TextInput::make('display_total')
                                             ->label(__('messages.total'))
-                                            ->numeric()
                                             ->disabled()
                                             ->dehydrated(false)
                                             ->columnSpan(1)

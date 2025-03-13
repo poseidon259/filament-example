@@ -58,4 +58,7 @@ return [
     'drag_and_drop_file_here' => 'ファイルをドラッグ＆ドロップ',
     'uploading' => 'アップロード中',
     'add_item' => '商品追加',
+    'export_pdf' => '出力',
+    'export_pdf_order' => '注文書出力',
+    'export_pdf_target' => '指定伝票出力 ',
 ];

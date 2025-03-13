@@ -96,6 +96,7 @@ class OrderResource extends Resource
                     ->options(self::getProducts())
                     ->required()
                     ->reactive()
+                    ->preload()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $product = Product::find($state);
 
@@ -137,8 +138,7 @@ class OrderResource extends Resource
                     ->placeholder('')
                     ->options(function (Get $get) {
 
-                        $products = Product::query()
-                            ->available();
+                        $products = Product::query();
                         if ($get('product_type')) {
                             return $products->where('product_type', $get('product_type'))
                                 ->pluck('name', 'name');
@@ -148,10 +148,10 @@ class OrderResource extends Resource
                     })
                     ->required()
                     ->reactive()
+                    ->preload()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                         $products = Product::query()
-                            ->where('name', $state)
-                            ->available();
+                            ->where('name', $state);
                         if ($get('product_type')) {
                             $products->where('product_type', $get('product_type'))
                                 ->get();
@@ -181,8 +181,7 @@ class OrderResource extends Resource
                     ->label(__('messages.product_type'))
                     ->placeholder('')
                     ->options(function (Get $get) {
-                        $query = Product::query()
-                            ->available();
+                        $query = Product::query();
 
                         if ($get('product_name')) {
                             return $query
@@ -194,6 +193,7 @@ class OrderResource extends Resource
                     })
                     ->required()
                     ->reactive()
+                    ->preload()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
 
@@ -208,8 +208,7 @@ class OrderResource extends Resource
                         }
 
                         $products = Product::query()
-                            ->where('product_type', $state)
-                            ->available();
+                            ->where('product_type', $state);
 
                         if ($get('product_name')) {
                             $products->where('name', $get('product_name'))
@@ -297,7 +296,6 @@ class OrderResource extends Resource
     public static function getProducts()
     {
         return Product::query()
-            ->available()
             ->orderBy('created_at')
             ->orderBy('id')
             ->pluck('product_code', 'id');
