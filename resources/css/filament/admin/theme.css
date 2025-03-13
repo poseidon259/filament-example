@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+@import '../../../../vendor/filament/filament/resources/css/base.css';
+
+@config 'tailwind.config.js';
+
+:root {
+    --black: #1a1a1a;
+    --main: #E9F1F7;
+    --heading: #2563EB;
+}
+
+.fi-main {
+    background-color: var(--main);
+}
+
+.fi-header-heading {
+    color: var(--heading)!important;
+}
+
+.fi-badge {
+    color: var(--black)!important;
+}
+
+.text-with-border-bottom {
+    @apply border-b border-gray-200;
+    @apply pb-2 pr-10;
+}
+
+.fl {
+    @apply float-left;
+}
