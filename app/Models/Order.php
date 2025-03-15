@@ -25,7 +25,11 @@ class Order extends Model
         'delivery_destination_address',
         'receiver_person_in_charge',
         'receiver_phone_number',
-        'total'
+        'total',
+        'exported_note',
+        'obic_registered_at',
+        'shipment_arranged_at',
+        'specified_invoice_exported_note',
     ];
 
     protected $casts = [

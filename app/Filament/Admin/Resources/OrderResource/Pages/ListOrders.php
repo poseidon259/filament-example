@@ -4,29 +4,27 @@ namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Enums\OrderStatus;
 use App\Filament\Admin\Resources\OrderResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 
 class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getTableEmptyStateIcon(): ?string
     {
-        return [
-            Actions\CreateAction::make()
-                ->label(__('messages.create'))
-                ->icon('heroicon-o-plus'),
-        ];
+        return '';
     }
 
     public function table(Table $table): Table
     {
         return parent::table($table)
+            ->emptyStateHeading('')
             ->modifyQueryUsing(function ($query) {
                 $query->where('status', '!=', OrderStatus::Draft);
             })
@@ -66,10 +64,10 @@ class ListOrders extends ListRecords
                     ->searchable()
                     ->options([
                         OrderStatus::Confirmed->value => __('messages.confirmed'),
-                        OrderStatus::PreparingToShip->value => __('messages.preparing_to_ship'),
-                        OrderStatus::Shipped->value => __('messages.shipped'),
-                        OrderStatus::Unpaid->value => __('messages.unpaid'),
-                        OrderStatus::PaymentCompleted->value => __('messages.payment_completed'),
+                        OrderStatus::Exported->value => __('messages.exported'),
+                        OrderStatus::OBICRegistered->value => __('messages.obic_registered'),
+                        OrderStatus::ShipmentArranged->value => __('messages.shipment_arranged'),
+                        OrderStatus::SpecifiedInvoiceExported->value => __('messages.specified_invoice_exported'),
                     ])
                     ->preload()
             ])

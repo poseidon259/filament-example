@@ -32,3 +32,8 @@
 .fl {
     @apply float-left;
 }
+
+.fi-ta-empty-state-icon,
+.fi-ta-empty-state-icon-ctn{
+    display: none!important;;
+}

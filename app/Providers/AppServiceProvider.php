@@ -26,10 +26,10 @@ class AppServiceProvider extends ServiceProvider
         FilamentColor::register([
             'draft' => Color::Gray,
             'confirmed' => Color::Blue,
-            'preparing_to_ship' => Color::Green,
-            'shipped' => Color::Yellow,
-            'unpaid' => Color::Orange,
-            'payment_completed' => Color::Purple,
+            'exported' => Color::Green,
+            'obic' => Color::Yellow,
+            'shipment' => Color::Orange,
+            'specified_invoice' => Color::Purple,
         ]);
 
         Wizard::configureUsing(function (Wizard $wizard) {

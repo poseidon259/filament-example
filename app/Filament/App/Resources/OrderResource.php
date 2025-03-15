@@ -243,20 +243,24 @@ class OrderResource extends Resource
                     ->default(1)
                     ->minValue(1)
                     ->maxValue(function (?Model $record, Get $get) {
-                        Redis::set('product_' . $get('product_id'), $get('qty'));
                         $redisQty = Redis::get('product_' . $get('product_id'));
+                        $maxQty = 0;
 
-                        if (!is_null($redisQty)) {
-                            return $record ? $record->qty + $redisQty : $redisQty;
+                        if (strlen($redisQty) > 0) {
+                            $maxQty = $record ? $record->qty + $redisQty : $redisQty;
                         } else {
                             $product = Product::find($get('product_id'));
                             if ($product) {
-                                return $record ? $record->qty + $product->qty : $product->qty;
+                                $maxQty = $record ? $record->qty + $product->qty : $product->qty;
+                                Redis::set('product_' . $get('product_id'), $product->qty ?? 0);
                             }
                         }
 
-                        return $get('qty');
+                        return $maxQty;
                     })
+                    ->validationMessages([
+                        'max' => __('messages.max_quantity_error'),
+                    ])
                     ->afterStateUpdated(function (Set $set, Get $get) {
                         $qty = $get('qty') ?: 0;
                         $subTotal = $qty * $get('price');

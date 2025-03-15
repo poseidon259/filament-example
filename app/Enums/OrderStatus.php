@@ -4,17 +4,15 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
-use Illuminate\Support\Facades\Blade;
-use function Symfony\Component\Translation\t;
 
 enum OrderStatus : string implements HasLabel, HasColor
 {
     case Draft = 'draft';
     case Confirmed = 'confirmed';
-    case PreparingToShip = 'preparing_to_ship';
-    case Shipped = 'shipped';
-    case Unpaid = 'unpaid';
-    case PaymentCompleted = 'payment_completed';
+    case Exported = 'exported';
+    case OBICRegistered = 'obic_registered';
+    case ShipmentArranged = 'shipment_arranged';
+    case SpecifiedInvoiceExported = 'specified_invoice_exported';
 
 
     public function getColor(): string | array | null
@@ -22,10 +20,10 @@ enum OrderStatus : string implements HasLabel, HasColor
         return match ($this) {
             self::Draft => 'draft',
             self::Confirmed => 'confirmed',
-            self::PreparingToShip => 'preparing_to_ship',
-            self::Shipped => 'shipped',
-            self::Unpaid => 'unpaid',
-            self::PaymentCompleted => 'payment_completed',
+            self::Exported => 'exported',
+            self::OBICRegistered => 'obic',
+            self::ShipmentArranged => 'shipment',
+            self::SpecifiedInvoiceExported => 'specified_invoice',
         };
     }
 
@@ -34,10 +32,10 @@ enum OrderStatus : string implements HasLabel, HasColor
         return match ($this) {
             self::Draft => __('messages.draft'),
             self::Confirmed => __('messages.confirmed'),
-            self::PreparingToShip => __('messages.preparing_to_ship'),
-            self::Shipped => __('messages.shipped'),
-            self::Unpaid => __('messages.unpaid'),
-            self::PaymentCompleted => __('messages.payment_completed'),
+            self::Exported => __('messages.exported'),
+            self::OBICRegistered => __('messages.obic_registered'),
+            self::ShipmentArranged => __('messages.shipment_arranged'),
+            self::SpecifiedInvoiceExported => __('messages.specified_invoice_exported'),
         };
     }
 }
