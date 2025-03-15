@@ -93,6 +93,9 @@ class CreateOrder extends CreateRecord
                             ->required(fn(Get $get) => !$this->isDraft($get))
                             ->placeholder('2025-02-01')
                             ->date()
+                            ->default(now())
+                            ->dehydrated()
+                            ->disabled()
                             ->native(false)
                             ->displayFormat('Y-m-d'),
 
@@ -104,6 +107,8 @@ class CreateOrder extends CreateRecord
                             ])
                             ->native(false)
                             ->required()
+                            ->disabled()
+                            ->dehydrated()
                             ->default(OrderStatus::Draft->value),
 
                         TextInput::make('customer_name')
@@ -154,13 +159,11 @@ class CreateOrder extends CreateRecord
                         TextInput::make('delivery_destination_phone')
                             ->label(__('messages.delivery_destination_phone'))
                             ->placeholder('080-0000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => !$this->isDraft($get)),
 
                         TextInput::make('delivery_destination_zip_code')
                             ->label(__('messages.delivery_destination_zip_code'))
                             ->placeholder('000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => !$this->isDraft($get)),
 
                         TextInput::make('delivery_destination_address')
@@ -178,7 +181,6 @@ class CreateOrder extends CreateRecord
                         TextInput::make('receiver_phone_number')
                             ->label(__('messages.receiver_phone_number'))
                             ->placeholder('080-0000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => !$this->isDraft($get)),
 
                         Hidden::make('total')

@@ -53,7 +53,7 @@ return [
     'import_csv_price' => '在庫状況アップロード',
     'import_csv_qty' => '価格アップロード',
     'save_as_draft' => '下書き保存',
-    'save_as_confirmed' => '注文',
+    'save_as_confirmed' => '注文登録',
     'import' => 'インポート',
     'drag_and_drop_file_here' => 'ファイルをドラッグ＆ドロップ',
     'uploading' => 'アップロード中',

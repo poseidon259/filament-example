@@ -49,6 +49,7 @@ class EditOrder extends EditRecord
                             ->placeholder('2025-02-01')
                             ->date()
                             ->native(false)
+                            ->disabled()
                             ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value)
                             ->displayFormat('Y-m-d'),
 
@@ -70,8 +71,8 @@ class EditOrder extends EditRecord
                                     $component->state(OrderStatus::Confirmed->value);
                                 }
                             })
-                            ->required()
-                            ->searchable(),
+                            ->disabled()
+                            ->required(),
 
                         TextInput::make('customer_name')
                             ->label(__('messages.customer_name'))
@@ -121,13 +122,11 @@ class EditOrder extends EditRecord
                         TextInput::make('delivery_destination_phone')
                             ->label(__('messages.delivery_destination_phone'))
                             ->placeholder('080-0000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value),
 
                         TextInput::make('delivery_destination_zip_code')
                             ->label(__('messages.delivery_destination_zip_code'))
                             ->placeholder('000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value),
 
                         TextInput::make('delivery_destination_address')
@@ -145,7 +144,6 @@ class EditOrder extends EditRecord
                         TextInput::make('receiver_phone_number')
                             ->label(__('messages.receiver_phone_number'))
                             ->placeholder('080-0000-0000')
-                            ->numeric()
                             ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value),
 
                         Hidden::make('total')
