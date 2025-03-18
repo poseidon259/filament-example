@@ -5,6 +5,7 @@ namespace App\Filament\App\Resources\OrderResource\Pages;
 use App\Enums\OrderStatus;
 use App\Filament\App\Resources\OrderResource;
 use App\Infolists\Components\TextWithBorderBottom;
+use Carbon\Carbon;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
@@ -31,7 +32,10 @@ class ViewOrder extends ViewRecord
                 Section::make(__('messages.order_details'))
                     ->schema([
                         TextWithBorderBottom::make('order_date')
-                            ->label(__('messages.order_date')),
+                            ->label(__('messages.order_date'))
+                            ->getStateUsing(function ($record) {
+                                return $record->order_date ? Carbon::parse($record->order_date)->format('Y-m-d') : null;
+                            }),
                         TextEntry::make('status')
                             ->label(__('messages.status'))
                             ->formatStateUsing(function ($state) {
@@ -58,9 +62,15 @@ class ViewOrder extends ViewRecord
                         TextWithBorderBottom::make('order_no')
                             ->label(__('messages.order_no')),
                         TextWithBorderBottom::make('delivery_date')
-                            ->label(__('messages.delivery_date')),
+                            ->label(__('messages.delivery_date'))
+                            ->getStateUsing(function ($record) {
+                                return $record->delivery_date ? Carbon::parse($record->delivery_date)->format('Y-m-d H:i') : null;
+                            }),
                         TextWithBorderBottom::make('expected_inspection_month')
-                            ->label(__('messages.expected_inspection_month')),
+                            ->label(__('messages.expected_inspection_month'))
+                            ->getStateUsing(function ($record) {
+                                return $record->expected_inspection_month ? Carbon::parse($record->expected_inspection_month)->format('Y-m') : null;
+                            }),
                         TextWithBorderBottom::make('delivery_destination')
                             ->label(__('messages.delivery_destination')),
                         TextWithBorderBottom::make('delivery_destination_phone')
@@ -73,8 +83,11 @@ class ViewOrder extends ViewRecord
                             ->label(__('messages.receiver_person_in_charge')),
                         TextWithBorderBottom::make('receiver_phone_number')
                             ->label(__('messages.receiver_phone_number')),
+                        TextWithBorderBottom::make('note')
+                            ->label(__('messages.note'))
+                            ->columnSpan(2),
                     ])
-                ->columns(),
+                    ->columns(),
                 Section::make(__('messages.order_items'))
                     ->schema([
                         RepeatableEntry::make('items')

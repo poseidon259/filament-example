@@ -68,6 +68,9 @@ class ViewOrder extends ViewRecord
                             ->label(__('messages.receiver_person_in_charge')),
                         TextWithBorderBottom::make('receiver_phone_number')
                             ->label(__('messages.receiver_phone_number')),
+                        TextWithBorderBottom::make('note')
+                            ->label(__('messages.note'))
+                            ->columnSpan(2),
                     ])->columns(),
                 Section::make(__('messages.order_items'))
                     ->schema([

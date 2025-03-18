@@ -95,7 +95,6 @@ class CreateOrder extends CreateRecord
                             ->date()
                             ->default(now())
                             ->dehydrated()
-                            ->disabled()
                             ->native(false)
                             ->displayFormat('Y-m-d'),
 
@@ -127,7 +126,7 @@ class CreateOrder extends CreateRecord
                             ->label(__('messages.project_name'))
                             ->placeholder('ABC店')
                             ->string()
-                            ->required(fn(Get $get) => !$this->isDraft($get)),
+                            ->required(),
 
                         TextInput::make('order_no')
                             ->label(__('messages.order_no'))
@@ -182,6 +181,12 @@ class CreateOrder extends CreateRecord
                             ->label(__('messages.receiver_phone_number'))
                             ->placeholder('080-0000-0000')
                             ->required(fn(Get $get) => !$this->isDraft($get)),
+
+                        TextInput::make('note')
+                            ->label(__('messages.note'))
+                            ->placeholder('備考')
+                            ->columnSpan(2)
+                            ->string(),
 
                         Hidden::make('total')
                             ->label(__('messages.total'))

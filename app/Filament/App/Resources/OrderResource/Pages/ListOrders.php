@@ -5,6 +5,7 @@ namespace App\Filament\App\Resources\OrderResource\Pages;
 use App\Enums\OrderStatus;
 use App\Filament\App\Resources\OrderResource;
 use App\Tables\Columns\StatusBagdeColumn;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Actions\ViewAction;
@@ -54,6 +55,9 @@ class ListOrders extends ListRecords
 
                 TextColumn::make('order_date')
                     ->label(__('messages.order_date'))
+                    ->formatStateUsing(function ($state) {
+                        return $state ? Carbon::parse($state)->format('Y-m-d') : null;
+                    })
                     ->sortable(['order_date']),
 
                 TextColumn::make('project_name')
@@ -65,6 +69,9 @@ class ListOrders extends ListRecords
 
                 TextColumn::make('delivery_date')
                     ->label(__('messages.delivery_date'))
+                    ->formatStateUsing(function ($state) {
+                        return $state ? Carbon::parse($state)->format('Y-m-d H:i') : null;
+                    })
                     ->sortable(['delivery_date']),
 
                 TextColumn::make('delivery_destination')

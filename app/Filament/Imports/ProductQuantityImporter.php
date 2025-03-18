@@ -33,7 +33,7 @@ class ProductQuantityImporter extends Importer
 
         if ($product) {
             $product->update([
-                'qty' => $this->data['qty'],
+                'qty' => $product->qty + $this->data['qty'],
             ]);
         }
 

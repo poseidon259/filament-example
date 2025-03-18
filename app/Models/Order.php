@@ -30,6 +30,7 @@ class Order extends Model
         'obic_registered_at',
         'shipment_arranged_at',
         'specified_invoice_exported_note',
+        'note'
     ];
 
     protected $casts = [

@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Enums\OrderStatus;
 use App\Filament\Admin\Resources\OrderResource;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\DatePicker;
@@ -129,13 +130,11 @@ class EditOrder extends EditRecord
                                         TextInput::make('delivery_destination_phone')
                                             ->label(__('messages.delivery_destination_phone'))
                                             ->placeholder('080-0000-0000')
-                                            ->numeric()
                                             ->required(),
 
                                         TextInput::make('delivery_destination_zip_code')
                                             ->label(__('messages.delivery_destination_zip_code'))
                                             ->placeholder('000-0000')
-                                            ->numeric()
                                             ->required(),
 
                                         TextInput::make('delivery_destination_address')
@@ -153,7 +152,11 @@ class EditOrder extends EditRecord
                                         TextInput::make('receiver_phone_number')
                                             ->label(__('messages.receiver_phone_number'))
                                             ->placeholder('080-0000-0000')
-                                            ->numeric()
+                                            ->required(),
+
+                                        TextInput::make('note')
+                                            ->label(__('messages.note'))
+                                            ->columnSpan(2)
                                             ->required(),
 
                                         Hidden::make('total')

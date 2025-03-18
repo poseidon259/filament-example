@@ -49,7 +49,7 @@ class EditOrder extends EditRecord
                             ->placeholder('2025-02-01')
                             ->date()
                             ->native(false)
-                            ->disabled()
+                            ->dehydrated()
                             ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value)
                             ->displayFormat('Y-m-d'),
 
@@ -90,7 +90,7 @@ class EditOrder extends EditRecord
                             ->label(__('messages.project_name'))
                             ->placeholder('ABC店')
                             ->string()
-                            ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value),
+                            ->required(),
 
                         TextInput::make('order_no')
                             ->label(__('messages.order_no'))

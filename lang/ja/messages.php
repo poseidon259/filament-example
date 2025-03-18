@@ -71,4 +71,5 @@ return [
     'obic_registered_at' => 'OBIC登録日',
     'shipment_arranged_at' => '配送手配日',
     'specified_invoice_exported_note' => '指定伝票出力メモ',
+    'note' => '備考'
 ];
