@@ -2,17 +2,22 @@
 
 namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
+use App\Exports\OrderExport;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Infolists\Components\TextWithBorderBottom;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\RestoreAction;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ViewOrder extends ViewRecord
 {
@@ -22,6 +27,43 @@ class ViewOrder extends ViewRecord
     public function getTitle(): string|Htmlable
     {
         return __('messages.order_details');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            RestoreAction::make(),
+            ActionGroup::make([
+                ActionGroup::make([
+                    Action::make('exportOrderPdf')
+                        ->label(__('messages.export_pdf_order'))
+                        ->icon('heroicon-s-arrow-down-on-square')
+                        ->action(function () {
+
+                            return Excel::download(
+                                new OrderExport($this->record),
+                                "order_{$this->record->order_no}.pdf",
+                                \Maatwebsite\Excel\Excel::MPDF
+                            );
+                        }),
+                ])->dropdown(false),
+                ActionGroup::make([
+                    Action::make('exportTargetPdf')
+                        ->label(__('messages.export_pdf_target'))
+                        ->icon('heroicon-s-arrow-down-on-square')
+                        ->action(function () {
+                            $order = $this->record;
+                            return Excel::download(
+                                new OrderExport($order),
+                                "order_{$order->order_no}.xlsx",
+                            );
+                        }),
+                ])->dropdown(false),
+            ])
+                ->label(__('messages.export_pdf'))
+                ->icon('heroicon-s-arrow-down-on-square')
+                ->button()
+        ];
     }
 
     public function infoList(Infolist $infolist): Infolist

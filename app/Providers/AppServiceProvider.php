@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Filament\Color as CustomColor;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Wizard;
 use Filament\Support\Colors\Color;
@@ -16,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+
     }
 
     /**
