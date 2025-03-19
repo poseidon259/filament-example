@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Exports\OrderExport;
+use App\Exports\TargetOrderExport;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Infolists\Components\TextWithBorderBottom;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -39,10 +40,10 @@ class ViewOrder extends ViewRecord
                         ->label(__('messages.export_pdf_order'))
                         ->icon('heroicon-s-arrow-down-on-square')
                         ->action(function () {
-
+                            $pdfName = now(). '_' . $this->record->order_no . '.pdf';
                             return Excel::download(
                                 new OrderExport($this->record),
-                                "order_{$this->record->order_no}.pdf",
+                                $pdfName,
                                 \Maatwebsite\Excel\Excel::MPDF
                             );
                         }),
@@ -52,10 +53,11 @@ class ViewOrder extends ViewRecord
                         ->label(__('messages.export_pdf_target'))
                         ->icon('heroicon-s-arrow-down-on-square')
                         ->action(function () {
-                            $order = $this->record;
+                            $pdfName = now(). '_' . $this->record->order_no . '.pdf';
                             return Excel::download(
-                                new OrderExport($order),
-                                "order_{$order->order_no}.xlsx",
+                                new TargetOrderExport($this->record),
+                                $pdfName,
+                                \Maatwebsite\Excel\Excel::MPDF
                             );
                         }),
                 ])->dropdown(false),

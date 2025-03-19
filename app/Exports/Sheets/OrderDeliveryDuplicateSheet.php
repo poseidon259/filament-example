@@ -75,7 +75,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->mergeCells('F1:M1');
         $sheet->setCellValue('F1', '納品書 （控）');
         $sheet->getStyle('F1:M1')->getFont()->setBold(true)->setSize(18);
-        $sheet->getStyle('F1:M1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F1:M1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
 
         $sheet->getStyle('A1:T1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
         $sheet->getStyle('A1:T1')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
@@ -234,7 +234,6 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->mergeCells("R{$row}:S{$row}");
     }
 
-    // Hàm phụ để điền dòng trống
     private function fillEmptyRow(Worksheet $sheet, $row)
     {
         $sheet->mergeCells("A{$row}:B{$row}");
