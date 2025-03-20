@@ -28,6 +28,24 @@ class ListOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('export_order_selected_header')
+                ->label(__('messages.export_order_selected'))
+                ->icon('heroicon-s-arrow-down-on-square')
+                ->color(Color::Stone)
+                ->action(function () {
+                    $this->js(
+                        <<<JS
+                            const buttons = document.querySelectorAll('[data-bulk-action]');
+                            const exportButton = Array.from(buttons).find(btn =>
+                                btn.dataset.bulkAction === 'export_order_selected'
+                            );
+
+                            if (exportButton) {
+                                exportButton.click();
+                            }
+                        JS
+                    );
+                }),
             Actions\CreateAction::make()
                 ->label(__('messages.create'))
                 ->icon('heroicon-o-plus')
@@ -210,7 +228,11 @@ class ListOrders extends ListRecords
                             now() . '_orders.csv',
                             \Maatwebsite\Excel\Excel::CSV
                         );
-                    }),
+                    })
+                    ->extraAttributes([
+                        'class' => 'hidden',
+                        'data-bulk-action' => 'export_order_selected',
+                    ])
             ])
             ->selectable();
     }
