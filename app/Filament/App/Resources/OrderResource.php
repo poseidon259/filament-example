@@ -2,6 +2,7 @@
 
 namespace App\Filament\App\Resources;
 
+use App\Enums\OrderStatus;
 use App\Filament\App\Resources\OrderResource\Pages;
 use App\Models\Order;
 use App\Models\Product;
@@ -94,7 +95,7 @@ class OrderResource extends Resource
                     ->label(__('messages.product_code'))
                     ->placeholder('')
                     ->options(self::getProducts())
-                    ->required()
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->live()
@@ -147,7 +148,7 @@ class OrderResource extends Resource
 
                         return $products->pluck('name', 'name');
                     })
-                    ->required()
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -192,7 +193,7 @@ class OrderResource extends Resource
 
                         return $query->pluck('product_type', 'product_type');
                     })
-                    ->required()
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
@@ -267,19 +268,19 @@ class OrderResource extends Resource
                         $set('display_sub_total', $subTotal . '円');
                         $set('sub_total', $subTotal);
                     })
-                    ->required(),
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
 
                 TextInput::make('display_price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated(false)
-                    ->required(),
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
 
                 Hidden::make('price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated()
-                    ->required(),
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
 
                 TextInput::make('display_sub_total')
                     ->label(__('messages.sub_total'))
@@ -289,13 +290,13 @@ class OrderResource extends Resource
                 Hidden::make('sub_total')
                     ->label(__('messages.sub_total'))
                     ->dehydrated()
-                    ->required(),
+                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
             ])
             ->dehydrated()
             ->defaultItems(1)
             ->hiddenLabel()
             ->columns(7)
-            ->required();
+            ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value);
     }
 
     public static function getProducts()

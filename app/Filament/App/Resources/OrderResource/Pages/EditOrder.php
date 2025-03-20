@@ -45,12 +45,12 @@ class EditOrder extends EditRecord
                     ->schema([
                         DatePicker::make('order_date')
                             ->label(__('messages.order_date'))
-                            ->required()
+                            ->disabled()
                             ->placeholder('2025-02-01')
                             ->date()
                             ->native(false)
                             ->dehydrated()
-                            ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value)
+                            ->required()
                             ->displayFormat('Y-m-d'),
 
                         Select::make('status')
@@ -90,7 +90,7 @@ class EditOrder extends EditRecord
                             ->label(__('messages.project_name'))
                             ->placeholder('ABC店')
                             ->string()
-                            ->required(),
+                            ->required(fn(Get $get) => $get('status') != OrderStatus::Draft->value),
 
                         TextInput::make('order_no')
                             ->label(__('messages.order_no'))

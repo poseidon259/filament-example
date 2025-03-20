@@ -96,6 +96,7 @@ class CreateOrder extends CreateRecord
                             ->default(now())
                             ->dehydrated()
                             ->native(false)
+                            ->disabled()
                             ->displayFormat('Y-m-d'),
 
                         Select::make('status')
