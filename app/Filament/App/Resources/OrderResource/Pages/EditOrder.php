@@ -45,12 +45,12 @@ class EditOrder extends EditRecord
                     ->schema([
                         DatePicker::make('order_date')
                             ->label(__('messages.order_date'))
-                            ->disabled()
                             ->placeholder('2025-02-01')
                             ->date()
                             ->native(false)
                             ->dehydrated()
                             ->required()
+                            ->disabled()
                             ->displayFormat('Y-m-d'),
 
                         Select::make('status')

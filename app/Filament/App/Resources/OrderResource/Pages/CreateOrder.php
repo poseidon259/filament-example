@@ -94,9 +94,9 @@ class CreateOrder extends CreateRecord
                             ->placeholder('2025-02-01')
                             ->date()
                             ->default(now())
-                            ->dehydrated()
                             ->native(false)
                             ->disabled()
+                            ->dehydrated()
                             ->displayFormat('Y-m-d'),
 
                         Select::make('status')
