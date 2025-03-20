@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\OrderItem;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -52,12 +53,12 @@ class OrderItemExport implements FromCollection, WithHeadings, WithMapping, Shou
     public function map($row): array
     {
         return [
-            $row->order->order_date,
+            Carbon::parse($row->order->order_date)->format('Y-m-d'),
             $row->order->customer_name,
             $row->order->project_name,
             $row->order->order_no,
-            $row->order->delivery_date,
-            $row->order->expected_inspection_month,
+            Carbon::parse($row->order->delivery_date)->format('Y-m-d H:i'),
+            Carbon::parse($row->order->expected_inspection_month)->format('Y-m'),
             $row->order->delivery_destination,
             $row->order->delivery_destination_address,
             $row->order->receiver_person_in_charge,
