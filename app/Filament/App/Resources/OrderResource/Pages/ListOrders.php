@@ -105,7 +105,7 @@ class ListOrders extends ListRecords
                         }
 
                         if ($data['value'] == OrderStatus::Draft->value) {
-                            $query->where('status', '=', OrderStatus::Draft);
+                            return $query->where('status', '=', OrderStatus::Draft);
                         }
 
                         return $query->where('status', '!=', OrderStatus::Draft);

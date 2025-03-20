@@ -71,7 +71,8 @@ class EditOrder extends EditRecord
                                     $component->state(OrderStatus::Confirmed->value);
                                 }
                             })
-                            ->disabled()
+                            ->disabled(fn($record) => $record && $record->status !== OrderStatus::Draft)
+                            ->native(false)
                             ->required(),
 
                         TextInput::make('customer_name')

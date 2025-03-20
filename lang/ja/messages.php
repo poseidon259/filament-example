@@ -42,7 +42,7 @@ return [
     'product_type' => '型式',
     'select_product' => '商品選択',
     'no' => 'No',
-    'create_order' => '注文リスト',
+    'create_order' => '注文登録',
     'edit_order' => '注文編集',
     'save' => '保存',
     'search_orders' => '注文を検索',
