@@ -206,7 +206,6 @@ class EditOrder extends EditRecord
                                         TextInput::make('note')
                                             ->label(__('messages.note'))
                                             ->columnSpan(2)
-                                            ->required()
                                             ->disabled()
                                             ->dehydrated(false),
 
