@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\MaxWidth;
@@ -132,18 +133,32 @@ class ListOrders extends ListRecords
                     ->columnSpan(2),
                 Filter::make('order_date')
                     ->form([
-                        Grid::make()
+                        Placeholder::make('order_date')
+                            ->hiddenLabel()
+                            ->content(__('messages.order_date')),
+                        Grid::make(9)
                             ->schema([
                                 DatePicker::make('order_date_start')
-                                    ->label(__('messages.order_date'))
+                                    ->hiddenLabel()
                                     ->placeholder('2025-02-01')
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->columnSpan(4),
+
+                                Placeholder::make('separator')
+                                    ->label('')
+                                    ->content('〜')
+                                    ->extraAttributes([
+                                        'class' => 'text-center flex items-center justify-center mt-1',
+                                    ])
+                                    ->columnSpan(1),
+
                                 DatePicker::make('order_date_end')
-                                    ->label(__('messages.order_date'))
+                                    ->hiddenLabel()
                                     ->placeholder('2025-02-28')
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->columnSpan(4),
                             ]),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
@@ -171,18 +186,32 @@ class ListOrders extends ListRecords
 
                 Filter::make('delivery_date')
                     ->form([
-                        Grid::make()
+                        Placeholder::make('order_date')
+                            ->hiddenLabel()
+                            ->content(__('messages.order_date')),
+                        Grid::make(9)
                             ->schema([
                                 DatePicker::make('delivery_date_start')
-                                    ->label(__('messages.delivery_date'))
+                                    ->hiddenLabel()
                                     ->placeholder('2025-02-01')
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->columnSpan(4),
+
+                                Placeholder::make('separator')
+                                    ->hiddenLabel()
+                                    ->content('〜')
+                                    ->extraAttributes([
+                                        'class' => 'text-center flex items-center justify-center mt-1',
+                                    ])
+                                    ->columnSpan(1),
+
                                 DatePicker::make('delivery_date_end')
-                                    ->label(__('messages.delivery_date'))
+                                    ->hiddenLabel()
                                     ->placeholder('2025-02-28')
                                     ->native(false)
-                                    ->displayFormat('Y-m-d'),
+                                    ->displayFormat('Y-m-d')
+                                    ->columnSpan(4),
                             ])
                     ])
                     ->indicateUsing(function ($data) {

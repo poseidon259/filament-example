@@ -13,8 +13,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +24,6 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     protected static ?string $navigationIcon = '';
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function getLabel(): ?string
     {
@@ -56,17 +53,10 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
 //            'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
-            'view' => Pages\ViewOrder::route('/{record}'),
+//            'view' => Pages\ViewOrder::route('/{record}'),
         ];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
-    {
-        return $page->generateNavigationItems([
-            Pages\ViewOrder::class,
-            Pages\EditOrder::class,
-        ]);
-    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -76,11 +66,12 @@ class OrderResource extends Resource
             ]);
     }
 
-    public static function getItemsRepeater(): Repeater
+    public static function getItemsRepeater($isEdit = false): Repeater
     {
         return Repeater::make('items')
             ->relationship('items')
             ->addActionLabel(__('messages.add_item'))
+            ->addable(!$isEdit)
             ->schema([
                 Placeholder::make('item_number')
                     ->label(__('messages.no'))
@@ -131,7 +122,10 @@ class OrderResource extends Resource
                     })
                     ->distinct()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                    ->searchable(),
+                    ->searchable()
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 Select::make('product_name')
                     ->label(__('messages.product_name'))
@@ -175,7 +169,10 @@ class OrderResource extends Resource
                         }
                     })
                     ->searchable()
-                    ->dehydrated(false),
+                    ->dehydrated(false)
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 Select::make('product_type')
                     ->label(__('messages.product_type'))
@@ -233,7 +230,10 @@ class OrderResource extends Resource
                         }
                     })
                     ->searchable()
-                    ->dehydrated(false),
+                    ->dehydrated(false)
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 TextInput::make('qty')
                     ->label(__('messages.quantity'))
@@ -263,29 +263,44 @@ class OrderResource extends Resource
                         $set('display_sub_total', $subTotal . '円');
                         $set('sub_total', $subTotal);
                     })
-                    ->required(),
+                    ->required()
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 TextInput::make('display_price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated(false)
-                    ->required(),
+                    ->required()
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 Hidden::make('price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated()
-                    ->required(),
+                    ->required()
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 TextInput::make('display_sub_total')
                     ->label(__('messages.sub_total'))
                     ->disabled()
-                    ->dehydrated(false),
+                    ->dehydrated(false)
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
 
                 Hidden::make('sub_total')
                     ->label(__('messages.sub_total'))
                     ->dehydrated()
-                    ->required(),
+                    ->required()
+                    ->disabled(function () use ($isEdit) {
+                        return $isEdit;
+                    }),
             ])
             ->dehydrated()
             ->defaultItems(1)

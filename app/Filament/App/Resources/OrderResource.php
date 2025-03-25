@@ -63,10 +63,15 @@ class OrderResource extends Resource
 
     public static function getRecordSubNavigation(Page $page): array
     {
-        return $page->generateNavigationItems([
-            Pages\ViewOrder::class,
-            Pages\EditOrder::class,
-        ]);
+        $record = $page->getRecord();
+
+        $items = [Pages\ViewOrder::class];
+
+        if ($record->status === OrderStatus::Draft) {
+            $items[] = Pages\EditOrder::class;
+        }
+
+        return $page->generateNavigationItems($items);
     }
 
     public static function getEloquentQuery(): Builder

@@ -26,10 +26,10 @@ class Order extends Model
         'receiver_person_in_charge',
         'receiver_phone_number',
         'total',
-        'exported_note',
+        'exported_at',
         'obic_registered_at',
         'shipment_arranged_at',
-        'specified_invoice_exported_note',
+        'specified_invoice_exported_at',
         'note'
     ];
 

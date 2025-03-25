@@ -6,12 +6,12 @@ use App\Enums\OrderStatus;
 use App\Filament\Admin\Resources\OrderResource;
 use Carbon\Carbon;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ListOrders extends ListRecords
 {
@@ -79,7 +79,7 @@ class ListOrders extends ListRecords
                     ->preload()
             ])
             ->actions([
-                ViewAction::make()
+                EditAction::make()
                     ->icon('heroicon-s-ellipsis-vertical')
                     ->hiddenLabel(),
             ])

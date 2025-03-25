@@ -18,11 +18,11 @@ use Illuminate\Contracts\Support\Htmlable;
 class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
-    protected static ?string $title = '基本情報';
+    protected static ?string $title = '注文詳細';
 
     public function getTitle(): string|Htmlable
     {
-        return __('messages.order_details');
+        return __('messages.edit_orders');
     }
 
     public function infoList(Infolist $infolist): Infolist

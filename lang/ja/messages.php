@@ -67,11 +67,12 @@ return [
     'obic_registered' => 'OBIC登録済',
     'max_quantity_error' => 'ご選択いただいた商品は現在在庫がありません。',
     'order_status' => 'ステータス変更',
-    'exported_note' => '注文書出力メモ',
+    'exported_at' => '注文書出力メモ',
     'obic_registered_at' => 'OBIC登録日',
     'shipment_arranged_at' => '配送手配日',
-    'specified_invoice_exported_note' => '指定伝票出力メモ',
+    'specified_invoice_exported_at' => '指定伝票出力メモ',
     'note' => '備考',
     'export_order_csv' => '注文履歴出力',
-    'export_order_selected' => '注文履歴出力'
+    'export_order_selected' => '注文履歴出力',
+    'edit_orders' => '注文詳細'
 ];
