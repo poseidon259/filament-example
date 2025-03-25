@@ -257,9 +257,6 @@ class EditOrder extends EditRecord
                                                             'class' => 'w-full justify-center',
                                                             'style' => 'min-width: 100px;',
                                                         ])
-                                                        ->action(function () {
-                                                            $this->data['status'] = OrderStatus::OBICRegistered->value;
-                                                        })
                                                 ])->columnSpan(1),
 
                                                 DatePicker::make('obic_registered_at')
@@ -269,8 +266,14 @@ class EditOrder extends EditRecord
                                                     ->placeholder('2025-02-01')
                                                     ->suffixIcon('heroicon-s-calendar')
                                                     ->columnSpan(1)
+                                                    ->live()
                                                     ->displayFormat('Y-m-d')
-                                                    ->required(fn(Get $get) => $get('status') === OrderStatus::OBICRegistered->value),
+                                                    ->required(fn(Get $get) => $get('status') === OrderStatus::OBICRegistered->value)
+                                                    ->afterStateUpdated(function ($state, Set $set) {
+                                                        if ($state) {
+                                                            $set('status', OrderStatus::OBICRegistered->value);
+                                                        }
+                                                    }),
                                             ])
                                             ->columns(2),
 
@@ -284,20 +287,24 @@ class EditOrder extends EditRecord
                                                             'class' => 'w-full justify-center',
                                                             'style' => 'min-width: 100px;',
                                                         ])
-                                                        ->action(function () {
-                                                            $this->data['status'] = OrderStatus::ShipmentArranged->value;
-                                                        })
+
                                                 ])->columnSpan(1),
 
                                                 DatePicker::make('shipment_arranged_at')
                                                     ->hiddenLabel()
                                                     ->label(__('messages.shipment_arranged_at'))
                                                     ->native(false)
+                                                    ->live()
                                                     ->placeholder('2025-02-01')
                                                     ->suffixIcon('heroicon-s-calendar')
                                                     ->columnSpan(1)
                                                     ->displayFormat('Y-m-d')
-                                                    ->required(fn(Get $get) => $get('status') === OrderStatus::ShipmentArranged->value),
+                                                    ->required(fn(Get $get) => $get('status') === OrderStatus::ShipmentArranged->value)
+                                                    ->afterStateUpdated(function ($state, Set $set) {
+                                                        if ($state) {
+                                                            $set('status', OrderStatus::ShipmentArranged->value);
+                                                        }
+                                                    }),
                                             ])
                                             ->columns(2),
 
@@ -311,6 +318,7 @@ class EditOrder extends EditRecord
                                                             'class' => 'w-full justify-center',
                                                             'style' => 'min-width: 100px;',
                                                         ])
+                                                        ->action(null)
                                                 ])->columnSpan(1),
 
                                                 DatePicker::make('specified_invoice_exported_at')
