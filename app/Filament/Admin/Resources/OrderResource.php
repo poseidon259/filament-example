@@ -72,6 +72,7 @@ class OrderResource extends Resource
             ->relationship('items')
             ->addActionLabel(__('messages.add_item'))
             ->addable(!$isEdit)
+            ->deletable(!$isEdit)
             ->schema([
                 Placeholder::make('item_number')
                     ->label(__('messages.no'))
