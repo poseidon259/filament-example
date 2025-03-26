@@ -84,7 +84,6 @@ class EditOrder extends EditRecord
                                     ->schema([
                                         DatePicker::make('order_date')
                                             ->label(__('messages.order_date'))
-                                            ->required()
                                             ->placeholder('2025-02-02')
                                             ->date()
                                             ->native(false)
