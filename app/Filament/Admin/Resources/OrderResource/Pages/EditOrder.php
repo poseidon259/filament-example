@@ -3,8 +3,9 @@
 namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Enums\OrderStatus;
+use App\Exports\OrderExport;
+use App\Exports\TargetOrderExport;
 use App\Filament\Admin\Resources\OrderResource;
-use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\DatePicker;
@@ -22,6 +23,7 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Actions\ActionGroup;
 use Filament\Forms\Components\Actions;
 use Illuminate\Contracts\Support\Htmlable;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EditOrder extends EditRecord
 {
@@ -42,6 +44,14 @@ class EditOrder extends EditRecord
                     Action::make('exportOrderPdf')
                         ->label(__('messages.export_pdf_order'))
                         ->icon('heroicon-s-arrow-down-on-square')
+                        ->action(function () {
+                            $pdfName = now() . '_' . $this->record->order_no . '.pdf';
+                            return Excel::download(
+                                new TargetOrderExport($this->record),
+                                $pdfName,
+                                \Maatwebsite\Excel\Excel::MPDF
+                            );
+                        })
                         ->after(function () {
                             $this->data['exported_at'] = now();
                             $this->data['status'] = OrderStatus::Exported->value;
@@ -52,6 +62,14 @@ class EditOrder extends EditRecord
                     Action::make('exportTargetPdf')
                         ->label(__('messages.export_pdf_target'))
                         ->icon('heroicon-s-arrow-down-on-square')
+                        ->action(function () {
+                            $pdfName = now() . '_' . $this->record->order_no . '.pdf';
+                            return Excel::download(
+                                new OrderExport($this->record),
+                                $pdfName,
+                                \Maatwebsite\Excel\Excel::MPDF
+                            );
+                        })
                         ->after(function () {
                             $this->data['specified_invoice_exported_at'] = now();
                             $this->data['status'] = OrderStatus::SpecifiedInvoiceExported->value;
@@ -270,6 +288,7 @@ class EditOrder extends EditRecord
                                                     ->afterStateUpdated(function ($state, Set $set) {
                                                         if ($state) {
                                                             $set('status', OrderStatus::OBICRegistered->value);
+                                                            $this->save();
                                                         }
                                                     }),
                                             ])
@@ -301,6 +320,7 @@ class EditOrder extends EditRecord
                                                     ->afterStateUpdated(function ($state, Set $set) {
                                                         if ($state) {
                                                             $set('status', OrderStatus::ShipmentArranged->value);
+                                                            $this->save();
                                                         }
                                                     }),
                                             ])
@@ -357,12 +377,12 @@ class EditOrder extends EditRecord
                         OrderResource::getItemsRepeater(isEdit: true)
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             })
                             ->addAction(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             }),
                         Grid::make()

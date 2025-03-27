@@ -158,12 +158,12 @@ class EditOrder extends EditRecord
                         OrderResource::getItemsRepeater()
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             })
                             ->addAction(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             }),
                         Grid::make()

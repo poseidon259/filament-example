@@ -32,7 +32,6 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset(APP_LOGO))
             ->viteTheme('resources/css/filament/app/theme.css')
             ->maxContentWidth(MAX_CONTENT_WIDTH)
-            ->breadcrumbs(false)
             ->colors([
                 'primary' => Color::Blue,
             ])

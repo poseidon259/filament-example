@@ -121,6 +121,11 @@ class ListProducts extends ListRecords
                 TextColumn::make('price')
                     ->label(__('messages.price'))
                     ->numeric(locale: 'en'),
-            ]);
+
+                TextColumn::make('weight')
+                    ->label(__('messages.weight'))
+                    ->numeric(locale: 'en'),
+            ])
+            ->paginated([5, 10, 25, 50, 100]);
     }
 }

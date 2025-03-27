@@ -66,7 +66,7 @@ class OrderItemExport implements FromCollection, WithHeadings, WithMapping, Shou
             $row->product->name,
             $row->product->product_type,
             $row->qty,
-            $row->weight ?? '',
+            number_format($row->product->weight * $row->qty, 2),
             $row->price,
             $row->sub_total
         ];

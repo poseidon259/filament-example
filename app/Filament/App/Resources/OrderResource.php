@@ -100,7 +100,7 @@ class OrderResource extends Resource
                     ->label(__('messages.product_code'))
                     ->placeholder('')
                     ->options(self::getProducts())
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->live()
@@ -115,6 +115,8 @@ class OrderResource extends Resource
                             $set('sub_total', $subTotal);
                             $set('product_type', $product->product_type);
                             $set('product_name', $product->name);
+                            $set('weight', $product->weight);
+                            $set('display_weight', $product->weight);
                         } else {
                             $set('price', 0);
                             $set('display_price', 0 . ' 円');
@@ -122,6 +124,8 @@ class OrderResource extends Resource
                             $set('sub_total', 0);
                             $set('product_type', '');
                             $set('product_name', '');
+                            $set('weight', '');
+                            $set('display_weight', '');
                         }
                     })
                     ->afterStateHydrated(function ($state, Set $set, Get $get) {
@@ -134,6 +138,8 @@ class OrderResource extends Resource
                             $subTotal = $get('qty') * $product->price;
                             $set('display_sub_total', $subTotal . ' 円');
                             $set('sub_total', $subTotal);
+                            $set('weight', $product->weight);
+                            $set('display_weight', $product->weight);
                         }
                     })
                     ->distinct()
@@ -153,7 +159,7 @@ class OrderResource extends Resource
 
                         return $products->pluck('name', 'name');
                     })
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -175,10 +181,13 @@ class OrderResource extends Resource
                             $set('product_type', $product->product_type);
 
                             $subTotal = $get('qty') * $product->price;
+                            $displayWeight = number_format($product->weight * $get('qty'), 2);
                             $set('price', $product->price);
                             $set('display_price', $product->price . ' 円');
                             $set('display_sub_total', $subTotal . ' 円');
                             $set('sub_total', $subTotal);
+                            $set('weight', $product->weight);
+                            $set('display_weight', $displayWeight);
                         }
                     })
                     ->searchable()
@@ -198,7 +207,7 @@ class OrderResource extends Resource
 
                         return $query->pluck('product_type', 'product_type');
                     })
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value)
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value)
                     ->reactive()
                     ->preload()
                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
@@ -233,10 +242,13 @@ class OrderResource extends Resource
                             $set('product_name', $product->name);
 
                             $subTotal = $get('qty') * $product->price;
+                            $displayWeight = number_format($product->weight * $get('qty'), 2);
                             $set('price', $product->price);
                             $set('display_price', $product->price . ' 円');
                             $set('display_sub_total', $subTotal . ' 円');
                             $set('sub_total', $subTotal);
+                            $set('weight', $product->weight);
+                            $set('display_weight', $displayWeight);
                         }
                     })
                     ->searchable()
@@ -270,22 +282,34 @@ class OrderResource extends Resource
                     ->afterStateUpdated(function (Set $set, Get $get) {
                         $qty = $get('qty') ?: 0;
                         $subTotal = $qty * $get('price');
+                        $displayWeight = number_format($get('weight') * $qty, 2);
                         $set('display_sub_total', $subTotal . '円');
                         $set('sub_total', $subTotal);
+                        $set('display_weight', $displayWeight);
                     })
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value),
+
+                TextInput::make('display_weight')
+                    ->label(__('messages.weight'))
+                    ->disabled()
+                    ->dehydrated(false),
+
+                Hidden::make('weight')
+                    ->label(__('messages.weight'))
+                    ->disabled()
+                    ->dehydrated(false),
 
                 TextInput::make('display_price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated(false)
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value),
 
                 Hidden::make('price')
                     ->label(__('messages.price'))
                     ->disabled()
                     ->dehydrated()
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value),
 
                 TextInput::make('display_sub_total')
                     ->label(__('messages.sub_total'))
@@ -295,13 +319,13 @@ class OrderResource extends Resource
                 Hidden::make('sub_total')
                     ->label(__('messages.sub_total'))
                     ->dehydrated()
-                    ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value),
+                    ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value),
             ])
             ->dehydrated()
             ->defaultItems(1)
             ->hiddenLabel()
-            ->columns(7)
-            ->required(fn (Get $get) => $get('../../status') != OrderStatus::Draft->value);
+            ->columns(8)
+            ->required(fn(Get $get) => $get('../../status') != OrderStatus::Draft->value);
     }
 
     public static function getProducts()

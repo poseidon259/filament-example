@@ -74,5 +74,6 @@ return [
     'note' => '備考',
     'export_order_csv' => '注文履歴出力',
     'export_order_selected' => '注文履歴出力',
-    'edit_orders' => '注文詳細'
+    'edit_orders' => '注文詳細',
+    'weight' => '重量',
 ];

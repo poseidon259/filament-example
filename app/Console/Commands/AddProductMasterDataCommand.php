@@ -43,6 +43,7 @@ class AddProductMasterDataCommand extends Command
                 [
                     'name' => $record['商品名'],
                     'product_type' => $record['規格'],
+                    'weight' => $record['売上単重'],
                 ]
             );
         }

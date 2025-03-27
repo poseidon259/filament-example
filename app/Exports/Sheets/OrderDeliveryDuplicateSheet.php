@@ -3,6 +3,7 @@
 namespace App\Exports\Sheets;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -33,8 +34,9 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
 
         $this->header($sheet);
         $this->orderDetail($sheet);
-        $this->orderItem($sheet);
-        $this->orderPrice($sheet);
+        $total = 0;
+        $this->orderItem($sheet, $total);
+        $this->orderPrice($sheet, $total);
 
         $this->rowDimension($sheet);
     }
@@ -88,6 +90,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->getStyle('P1:S1')->getBorders()->getBottom()->getColor()->setRGB('000000');
         $sheet->setCellValue('P1', 'NO.');
         $sheet->mergeCells('Q1:S1');
+        $sheet->setCellValue('Q1', 2000000 + $this->order->id);
         $sheet->getStyle('Q1:S1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // A2:T2
@@ -120,7 +123,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
 
         // D4:H4
         $sheet->mergeCells('D4:H4');
-        $sheet->setCellValue('D4', '納期');
+        $sheet->setCellValue('D4', $this->order->project_name);
 
         // I4:L4
         $sheet->mergeCells('I4:L4');
@@ -128,7 +131,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
 
         // M4:R4
         $sheet->mergeCells('M4:R4');
-        $sheet->setCellValue('M4', '');
+        $sheet->setCellValue('M4', '04347');
 
         // A5:T5
         $sheet->getStyle('A5:T5')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_MEDIUM);
@@ -139,7 +142,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
 
         // B5:H5
         $sheet->mergeCells('B5:H5');
-        $sheet->setCellValue('B5', '物件名');
+        $sheet->setCellValue('B5', Carbon::parse($this->order->delivery_date)->format('Y-m-d H:i'));
 
         // I5:J5
         $sheet->mergeCells('I5:J5');
@@ -153,7 +156,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->mergeCells('S4:T5');
     }
 
-    private function orderItem(Worksheet $sheet)
+    private function orderItem(Worksheet $sheet, &$total)
     {
         // A6:T6
         $sheet->mergeCells('A6:T6');
@@ -205,6 +208,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         // Handle order items
         foreach ($items as $item) {
             $this->fillItemRow($sheet, $row, $item);
+            $total += $item->sub_total;
             $row++;
         }
 
@@ -218,7 +222,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
     private function fillItemRow(Worksheet $sheet, $row, $item)
     {
         $sheet->mergeCells("A{$row}:B{$row}");
-        $sheet->setCellValue("A{$row}", $item->product->product_code);
+        $sheet->setCellValue("A{$row}", 2200);
 
         $sheet->mergeCells("C{$row}:H{$row}");
         $sheet->setCellValue("C{$row}", $item->product->name . ' ' . $item->product->product_type);
@@ -243,7 +247,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->mergeCells("R{$row}:S{$row}");
     }
 
-    private function orderPrice(Worksheet $sheet)
+    private function orderPrice(Worksheet $sheet, $total)
     {
         $sheet->mergeCells("A{$this->endRow}:T{$this->endRow}");
         $sheet->getStyle("A{$this->endRow}:T{$this->endRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -294,7 +298,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->setCellValue("N{$startRow}", '');
 
         $sheet->mergeCells("Q{$startRow}:T{$startRow}");
-        $sheet->setCellValue("Q{$startRow}", '');
+        $sheet->setCellValue("Q{$startRow}", number_format($total, 2));
 
         $sheet->mergeCells("A{$baseRow}:B{$startRow}");
         $sheet->getStyle("A{$baseRow}:B{$startRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);

@@ -40,9 +40,9 @@ class ViewOrder extends ViewRecord
                         ->label(__('messages.export_pdf_order'))
                         ->icon('heroicon-s-arrow-down-on-square')
                         ->action(function () {
-                            $pdfName = now(). '_' . $this->record->order_no . '.pdf';
+                            $pdfName = now() . '_' . $this->record->order_no . '.pdf';
                             return Excel::download(
-                                new OrderExport($this->record),
+                                new TargetOrderExport($this->record),
                                 $pdfName,
                                 \Maatwebsite\Excel\Excel::MPDF
                             );
@@ -53,9 +53,9 @@ class ViewOrder extends ViewRecord
                         ->label(__('messages.export_pdf_target'))
                         ->icon('heroicon-s-arrow-down-on-square')
                         ->action(function () {
-                            $pdfName = now(). '_' . $this->record->order_no . '.pdf';
+                            $pdfName = now() . '_' . $this->record->order_no . '.pdf';
                             return Excel::download(
-                                new TargetOrderExport($this->record),
+                                new OrderExport($this->record),
                                 $pdfName,
                                 \Maatwebsite\Excel\Excel::MPDF
                             );
@@ -132,6 +132,11 @@ class ViewOrder extends ViewRecord
                                     ->label(__('messages.product_type')),
                                 TextEntry::make('qty')
                                     ->label(__('messages.quantity')),
+                                TextEntry::make('weight')
+                                    ->label(__('messages.weight'))
+                                    ->state(function ($record) {
+                                        return number_format($record->product->weight * $record->qty, 2);
+                                    }),
                                 TextEntry::make('price')
                                     ->label(__('messages.price')),
                                 TextEntry::make('sub_total')

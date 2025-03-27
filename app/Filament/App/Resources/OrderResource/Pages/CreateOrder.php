@@ -40,6 +40,7 @@ class CreateOrder extends CreateRecord
                 ->color('draft')
                 ->action(function () {
                     $this->data['status'] = OrderStatus::Draft->value;
+                    $this->data['order_date'] = null;
                     $this->create();
                 }),
 
@@ -48,6 +49,7 @@ class CreateOrder extends CreateRecord
                 ->color('primary')
                 ->action(function () {
                     $this->data['status'] = OrderStatus::Confirmed->value;
+                    $this->data['order_date'] = now();
                     $this->create(reduceStock: true);
                 }),
         ];
@@ -93,7 +95,6 @@ class CreateOrder extends CreateRecord
                             ->required(fn(Get $get) => !$this->isDraft($get))
                             ->placeholder('2025-02-01')
                             ->date()
-                            ->default(now())
                             ->native(false)
                             ->disabled()
                             ->dehydrated()
@@ -200,12 +201,12 @@ class CreateOrder extends CreateRecord
                         OrderResource::getItemsRepeater()
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             })
                             ->addAction(function (Get $get, Set $set) {
                                 $total = collect($get('items'))->sum('sub_total');
-                                $set('display_total', $total);
+                                $set('display_total', $total . ' 円');
                                 $set('total', $total);
                             }),
                         Grid::make()

@@ -104,12 +104,17 @@ class ViewOrder extends ViewRecord
                                     ->label(__('messages.product_type')),
                                 TextEntry::make('qty')
                                     ->label(__('messages.quantity')),
+                                TextEntry::make('weight')
+                                    ->label(__('messages.weight'))
+                                    ->state(function ($record) {
+                                        return number_format($record->product->weight * $record->qty, 2);
+                                    }),
                                 TextEntry::make('price')
                                     ->label(__('messages.price')),
                                 TextEntry::make('sub_total')
                                     ->label(__('messages.sub_total'))
                             ])
-                            ->columns(6)
+                            ->columns(7)
                             ->hiddenLabel(),
                         Grid::make()
                             ->schema([

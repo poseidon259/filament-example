@@ -18,6 +18,7 @@ class Product extends Model
         'product_type',
         'qty',
         'price',
+        'weight',
     ];
 
     public function orderItems()
