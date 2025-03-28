@@ -66,6 +66,13 @@ class EditOrder extends EditRecord
 
                                 return $options;
                             })
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                if ($state === OrderStatus::Confirmed->value) {
+                                    $set('order_date', now());
+                                } else {
+                                    $set('order_date', null);
+                                }
+                            })
                             ->afterStateHydrated(function (Select $component, $state, $record) {
                                 if ($record && $state !== OrderStatus::Draft->value) {
                                     $component->state(OrderStatus::Confirmed->value);
