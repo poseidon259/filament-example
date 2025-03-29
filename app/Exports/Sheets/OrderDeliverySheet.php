@@ -146,7 +146,7 @@ class OrderDeliverySheet implements WithStyles, WithCustomStartCell, WithDrawing
 
         // D4:H4
         $sheet->mergeCells('D4:H4');
-        $sheet->setCellValue('D4', $this->order->project_name);
+        $sheet->setCellValue('D4', Carbon::parse($this->order->order_date)->format('Y-m-d'));
 
         // I4:L4
         $sheet->mergeCells('I4:L4');
@@ -462,7 +462,7 @@ class OrderDeliverySheet implements WithStyles, WithCustomStartCell, WithDrawing
 
         // D4:H4
         $sheet->mergeCells("D{$startRow}:H{$startRow}");
-        $sheet->setCellValue("D{$startRow}", $this->order->project_name);
+        $sheet->setCellValue("D{$startRow}", Carbon::parse($this->order->order_date)->format('Y-m-d'));
 
         // I4:L4
         $sheet->mergeCells("I{$startRow}:L{$startRow}");
