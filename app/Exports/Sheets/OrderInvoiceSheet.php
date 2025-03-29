@@ -78,7 +78,7 @@ class OrderInvoiceSheet implements WithStyles, WithCustomStartCell, WithDrawings
         $sheet->mergeCells('F1:M1');
         $sheet->setCellValue('F1', '請求明細書');
         $sheet->getStyle('F1:M1')->getFont()->setBold(true)->setSize(18);
-        $sheet->getStyle('F1:M1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F1:M1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
 
         $sheet->getStyle('A1:T1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
         $sheet->getStyle('A1:T1')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
@@ -294,13 +294,13 @@ class OrderInvoiceSheet implements WithStyles, WithCustomStartCell, WithDrawings
         $sheet->setCellValue("G{$startRow}", '');
 
         $sheet->mergeCells("J{$startRow}:M{$startRow}");
-        $sheet->setCellValue("J{$startRow}", '');
+        $sheet->setCellValue("J{$startRow}", $total);
 
         $sheet->mergeCells("N{$startRow}:P{$startRow}");
-        $sheet->setCellValue("N{$startRow}", '');
+        $sheet->setCellValue("N{$startRow}", $total * 0.1);
 
         $sheet->mergeCells("Q{$startRow}:T{$startRow}");
-        $sheet->setCellValue("Q{$startRow}", number_format($total, 2));
+        $sheet->setCellValue("Q{$startRow}", $total + ($total * 0.1));
 
         $sheet->mergeCells("A{$baseRow}:B{$startRow}");
         $sheet->getStyle("A{$baseRow}:B{$startRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -328,13 +328,13 @@ class OrderInvoiceSheet implements WithStyles, WithCustomStartCell, WithDrawings
         $sheet->setCellValue("I{$startRow}", '上長');
 
         $sheet->mergeCells("K{$startRow}:L{$startRow}");
-        $sheet->setCellValue("K{$startRow}", '担当者	');
+        $sheet->setCellValue("K{$startRow}", '担当者');
 
         $sheet->mergeCells("M{$startRow}:N{$startRow}");
         $sheet->setCellValue("M{$startRow}", '注文NO.');
 
         $sheet->mergeCells("O{$startRow}:R{$startRow}");
-        $sheet->setCellValue("O{$startRow}", '物件名');
+        $sheet->setCellValue("O{$startRow}", $this->order->order_no);
 
         $sheet->mergeCells("S{$startRow}:T{$startRow}");
         $sheet->setCellValue("S{$startRow}", '備考');
@@ -379,6 +379,7 @@ class OrderInvoiceSheet implements WithStyles, WithCustomStartCell, WithDrawings
         $sheet->mergeCells("Q{$startRow}:S{$startRow}");
         $sheet->setCellValue("Q{$startRow}", '2023/7/4');
 
+        $sheet->getStyle("T{$startRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue("T{$startRow}", '改訂');
     }
 

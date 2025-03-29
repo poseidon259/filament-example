@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
@@ -107,7 +106,7 @@ class ViewOrder extends ViewRecord
                                 TextEntry::make('weight')
                                     ->label(__('messages.weight'))
                                     ->state(function ($record) {
-                                        return number_format($record->product->weight * $record->qty, 2);
+                                        return $record->product->weight * $record->qty;
                                     }),
                                 TextEntry::make('price')
                                     ->label(__('messages.price')),

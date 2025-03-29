@@ -273,7 +273,7 @@ class OrderResource extends Resource
                     ->afterStateUpdated(function (Set $set, Get $get) {
                         $qty = $get('qty') ?: 0;
                         $subTotal = $qty * $get('price');
-                        $displayWeight = number_format($get('weight') * $qty, 2);
+                        $displayWeight = $get('weight') * $qty;
                         $set('display_sub_total', $subTotal . '円');
                         $set('sub_total', $subTotal);
                         $set('display_weight', $displayWeight);

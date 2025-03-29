@@ -49,7 +49,9 @@ class EditOrder extends EditRecord
                             ->date()
                             ->native(false)
                             ->dehydrated()
-                            ->required()
+                            ->required(function ($record) {
+                                return $record && $record->status !== OrderStatus::Draft;
+                            })
                             ->disabled()
                             ->displayFormat('Y-m-d'),
 

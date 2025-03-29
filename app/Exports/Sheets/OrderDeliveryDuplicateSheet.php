@@ -292,13 +292,13 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->setCellValue("G{$startRow}", '');
 
         $sheet->mergeCells("J{$startRow}:M{$startRow}");
-        $sheet->setCellValue("J{$startRow}", '');
+        $sheet->setCellValue("J{$startRow}", $total);
 
         $sheet->mergeCells("N{$startRow}:P{$startRow}");
-        $sheet->setCellValue("N{$startRow}", '');
+        $sheet->setCellValue("N{$startRow}", $total * 0.1);
 
         $sheet->mergeCells("Q{$startRow}:T{$startRow}");
-        $sheet->setCellValue("Q{$startRow}", number_format($total, 2));
+        $sheet->setCellValue("Q{$startRow}", $total + ($total * 0.1));
 
         $sheet->mergeCells("A{$baseRow}:B{$startRow}");
         $sheet->getStyle("A{$baseRow}:B{$startRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -332,7 +332,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->setCellValue("M{$startRow}", '注文NO.');
 
         $sheet->mergeCells("O{$startRow}:R{$startRow}");
-        $sheet->setCellValue("O{$startRow}", '物件名');
+        $sheet->setCellValue("O{$startRow}", $this->order->order_no);
 
         $sheet->mergeCells("S{$startRow}:T{$startRow}");
         $sheet->setCellValue("S{$startRow}", '備考');
@@ -377,6 +377,7 @@ class OrderDeliveryDuplicateSheet implements WithStyles, WithCustomStartCell
         $sheet->mergeCells("Q{$startRow}:S{$startRow}");
         $sheet->setCellValue("Q{$startRow}", '2023/7/4');
 
+        $sheet->getStyle("T{$startRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
         $sheet->setCellValue("T{$startRow}", '改訂');
     }
 }

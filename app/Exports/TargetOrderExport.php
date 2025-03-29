@@ -11,6 +11,8 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\BeforeWriting;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
@@ -36,15 +38,6 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:F1');
-        $sheet->getStyle('A1:F1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A1:F1')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
-
-
-        $sheet->mergeCells('A2:B2');
-        $sheet->getStyle('A2:B2')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A2:B2')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
-
         $sheet->getStyle('C2:F2')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_MEDIUM);
         $sheet->getStyle('C2:F2')->getBorders()->getAllBorders()->getColor()->setRGB('000000');
 
@@ -92,7 +85,8 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
     private function orderDate(Worksheet $sheet)
     {
-        $sheet->getStyle("C2:D2")->getFont()->setBold(true);
+        $sheet->getStyle("C2:D2")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB("C0C0C0");
+        $sheet->getStyle("C2:D2")->getFont()->setBold(true)->setSize(16);
         $sheet->mergeCells('C2:D2');
         $sheet->setCellValue('C2', '注文日');
 
@@ -102,24 +96,17 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
     private function orderContact(Worksheet $sheet)
     {
-        //
-        $sheet->mergeCells('A3:F3');
-        $sheet->getStyle('A3:F3')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A3:F3')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
+        $sheet->getStyle("A5")->getBorders()->getRight()->setBorderStyle(Border::BORDER_MEDIUM);
+        $sheet->getStyle("A5")->getBorders()->getRight()->getColor()->setRGB('000000');
+        $sheet->getStyle("A4")->getBorders()->getRight()->setBorderStyle(Border::BORDER_MEDIUM);
+        $sheet->getStyle("A4")->getBorders()->getRight()->getColor()->setRGB('000000');
 
-
         //
-        $sheet->getStyle('B4:B7')->getAlignment()->setVertical(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B4:B7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
         $sheet->getStyle('B4:B7')->getFont()->setBold(true);
-
-        $sheet->getStyle('A4:A7')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A4:A7')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
 
         $sheet->getStyle('B4:F7')->getBorders()->getLeft()->setBorderStyle(Border::BORDER_MEDIUM);
         $sheet->getStyle('B4:F7')->getBorders()->getLeft()->getColor()->setRGB('000000');
-
-        $sheet->getStyle('B4:F7')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_MEDIUM);
-        $sheet->getStyle('B4:F7')->getBorders()->getBottom()->getColor()->setRGB('000000');
 
         $sheet->getStyle('B4:F7')->getBorders()->getTop()->setBorderStyle(Border::BORDER_MEDIUM);
         $sheet->getStyle('B4:F7')->getBorders()->getTop()->getColor()->setRGB('000000');
@@ -128,8 +115,12 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
         $sheet->getStyle('B4:F7')->getBorders()->getRight()->getColor()->setRGB('000000');
 
 
+        $sheet->getStyle('B4:F7')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_MEDIUM);
+        $sheet->getStyle('B4:F7')->getBorders()->getBottom()->getColor()->setRGB('000000');
+
+
         $sheet->getStyle('B4:F4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('B4')->getFont()->setBold(true)->setSize(18);
+        $sheet->getStyle('B4')->getFont()->setBold(true)->setSize(16);
         $sheet->mergeCells("B4:C4");
         $sheet->setCellValue('B4', '　フクシマガリレリレイ株式会社');
 
@@ -138,32 +129,31 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
 
         //
-        $sheet->mergeCells("B5:F5");
-        $sheet->setCellValue('B5', '　住所： 〒 273-0028　千葉県船橋市海神町東1-1014-3');
+        $sheet->getStyle('B5:F5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('B5:F5')->getFont()->setBold(true);
+        $sheet->mergeCells("B5:C5");
+        $sheet->setCellValue('B5', '　〒　273-0028 千葉県船橋市海神町東1-1014-3');
 
         //
-        $sheet->getStyle('C6:C7')->getAlignment()->setVertical(Alignment::HORIZONTAL_LEFT);
-        $sheet->getStyle('C6:C7')->getFont()->setBold(true);
+        $sheet->getStyle('B6:F6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('B6:F6')->getFont()->setBold(true);
 
-        $sheet->setCellValue('B6', '　TEL：047-419-6496');
-        $sheet->setCellValue('C6', '　FAX：047-427-1191');
-        $sheet->setCellValue('D6', '');
+        $sheet->setCellValue('B6', '　TEL： 047-419-6496');
+        $sheet->mergeCells("D6:F6");
+        $sheet->setCellValue('D6', '　FAX： 047-427-1191');
 
         //
-        $sheet->setCellValue('B7', '　注文者：'. $this->order->customer_name);
+        $sheet->getStyle('B7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->setCellValue('B7', '　注文者：' . $this->order->customer_name);
 
-        $sheet->getStyle("C7:F7")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
-        $sheet->mergeCells("C7:F7");
-        $sheet->setCellValue('C7', '　営業担当者：'. $this->order->sales_representative);
+        $sheet->getStyle("D7:F7")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('D7:F7')->getFont()->setBold(true);
+        $sheet->mergeCells("D7:F7");
+        $sheet->setCellValue('D7', '　営業担当者：' . $this->order->sales_representative);
     }
 
     private function orderInfo(Worksheet $sheet)
     {
-        //
-        $sheet->mergeCells('A8:F8');
-        $sheet->getStyle('A8:F8')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A8:F8')->getBorders()->getAllBorders()->getColor()->setRGB('FFFFFF');
-
         //
         $sheet->getStyle('A9:F13')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_MEDIUM);
         $sheet->getStyle('A9:F13')->getBorders()->getAllBorders()->getColor()->setRGB('000000');
@@ -191,7 +181,8 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
         //
         $sheet->setCellValue('A12', '納入先住所');
-        $sheet->mergeCells('B12:F12')->setCellValue('B12', $this->order->delivery_destination_zip_code . ' ' . $this->order->delivery_destination_address);
+        $sheet->getStyle("B12:F12")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT)->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->mergeCells('B12:F12')->setCellValue('B12', "　〒　" . $this->order->delivery_destination_zip_code . ' ' . $this->order->delivery_destination_address);
 
         //
         $sheet->setCellValue('A13', '納入先担当者');
@@ -212,6 +203,8 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
         $sheet->getStyle('A15:F15')->getBorders()->getAllBorders()->getColor()->setRGB('000000');
         $sheet->getStyle('A15:F15')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
 
+        // bg color
+        $sheet->getStyle("A15:F15")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB("C0C0C0");
         // title
         $sheet->setCellValue('A15', '商品コード');
         $sheet->setCellValue('B15', '商品名・規格');
@@ -220,10 +213,11 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
         $sheet->setCellValue('E15', '単価');
         $sheet->setCellValue('F15', '金額（税抜)');
 
-        $sheet->getStyle('A15:F15')->getFont()->setBold(true);
+        $sheet->getStyle('A15:F15')->getFont()->setBold(true)->setSize(15);
 
         // Items
         $total = 0;
+        $totalWeight = 0;
         $items = $this->order->items;
         $row = 16;
         $itemCount = count($items);
@@ -239,6 +233,7 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
             $this->fillItemRow($sheet, $row, $item);
             $row++;
             $total += $item->sub_total;
+            $totalWeight += $item->product->weight * $item->qty;
         }
 
         $sheet->getStyle("A{$this->endRow}:B{$this->endRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -247,10 +242,13 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
         $sheet->mergeCells("A{$this->endRow}:B{$this->endRow}");
         $sheet->setCellValue("A{$this->endRow}", '※上記金額には消費税は含まれておりません');
 
+        $sheet->getStyle("C{$this->endRow}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB("C0C0C0");
         $sheet->setCellValue("C{$this->endRow}", '合計重量');
         $sheet->getStyle("C{$this->endRow}")->getFont()->setBold(true);
 
+        $sheet->setCellValue("D{$this->endRow}", $totalWeight);
 
+        $sheet->getStyle("E{$this->endRow}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB("C0C0C0");
         $sheet->setCellValue("E{$this->endRow}", '合計金額');
         $sheet->getStyle("E{$this->endRow}")->getFont()->setBold(true);
 
@@ -265,7 +263,7 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
 
         $sheet->setCellValue("C{$row}", $item->qty);
 
-        $sheet->setCellValue("D{$row}", number_format($item->product->weight * $item->qty, 2));
+        $sheet->setCellValue("D{$row}", $item->product->weight * $item->qty);
 
         $sheet->setCellValue("E{$row}", $item->product->price);
 
@@ -307,7 +305,7 @@ class TargetOrderExport implements WithStyles, WithCustomStartCell, WithEvents
     public function registerEvents(): array
     {
         return [
-            BeforeWriting::class => function(BeforeWriting $event) {
+            BeforeWriting::class => function (BeforeWriting $event) {
                 $writer = $event->writer;
                 $spreadsheet = $writer->getDelegate();
 

@@ -135,7 +135,7 @@ class ViewOrder extends ViewRecord
                                 TextEntry::make('weight')
                                     ->label(__('messages.weight'))
                                     ->state(function ($record) {
-                                        return number_format($record->product->weight * $record->qty, 2);
+                                        return $record->product->weight * $record->qty;
                                     }),
                                 TextEntry::make('price')
                                     ->label(__('messages.price')),
